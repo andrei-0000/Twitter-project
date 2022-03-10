@@ -1,5 +1,5 @@
 class TweetsController < ApplicationController
-  before_action :set_tweet, only: [:show, :edit, :update, :destroy]
+  before_action :set_tweet, only: [:show, :edit, :update, :destroy, :like]
 
   # GET /tweets
   # GET /tweets.json
@@ -72,7 +72,23 @@ class TweetsController < ApplicationController
     end
     end
   end
-
+ # LIKE/tweets/1
+  # LIKE /tweets/1.json
+  def like
+    @tweet.likes += 1
+    if @tweet.save
+      respond_to do |format|
+      format.html { redirect_to root_path, notice: 'Like' }
+      format.json { render :show, status: :like, location: @tweet }
+      end
+    else
+      respond_to do |format|
+      format.html { render :new }
+      format.json { render json: @tweet.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_tweet
