@@ -1,7 +1,32 @@
-<p id="notice"><%= notice %></p>
+<h1 class="wottitle">Wall of Tweets - RoR Edition 2022</h1>
+<br/>
+<div class="walltweet">
+<form action="/tweets" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="diHzsPy0vIej_oWgXe6uvBvED_ehub3hrIERAxuY7oikQf7p4Ldf2yr2eLIhl3bQXuLDePpJ6O9BpFA3Fl724Q" />
+<table border=0 cellpadding=2>
+<tr><td>Your name:</td><td><input size="70" type="text" name="tweet[author]" id="tweet_author" /></td><td/></tr>
+<tr><td>Your tweet:</td><td><textarea rows="2" cols="70" name="tweet[content]" id="tweet_content">
+</textarea></td>
+<td><input type="submit" name="commit" value="Tweet!" data-disable-with="Tweet!" /></td></tr>
+</table>
+</form></div>
+<% flash.each do |key, value| %>
+  <div class="wotitem"<p style="color:-<%= key %>;"><%= value %></p><span style="color: red;"></span></div>
+<% end %>  
 
-<h1>Tweets</h1>
-
+<% @tweets.each do |tweet| %>
+    <div class="wotitem">
+    <div class="likes">
+    <span class="numlikes"><%= tweet.likes %></span><br/><span class="smallfont">people like this<span><br/>
+    <h3><%= link_to 'Like', like_tweet_path(tweet), method: :put %></h3>
+    </div>
+    <div class="item">
+    <h4><em><%= tweet.author %> @ </em><%= tweet.created_at %></h4>
+    <p><%= tweet.content %></p>
+    <p style="text-align: right;"><%= link_to 'Destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' } %></p>
+    </div>
+  </div>
+<% end %>
+<!--
 <table>
   <thead>
     <tr>
@@ -28,7 +53,4 @@
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Tweet', new_tweet_path %>
+-->
