@@ -2,55 +2,33 @@
 <br/>
 <div class="walltweet">
 <form action="/tweets" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="diHzsPy0vIej_oWgXe6uvBvED_ehub3hrIERAxuY7oikQf7p4Ldf2yr2eLIhl3bQXuLDePpJ6O9BpFA3Fl724Q" />
-<table border=0 cellpadding=2>
-<tr><td>Your name:</td><td><input size="70" type="text" name="tweet[author]" id="tweet_author" /></td><td/></tr>
-<tr><td>Your tweet:</td><td><textarea rows="2" cols="70" name="tweet[content]" id="tweet_content">
-</textarea></td>
-<td><input type="submit" name="commit" value="Tweet!" data-disable-with="Tweet!" /></td></tr>
-</table>
+  <table border=0 cellpadding=2>
+  <tr><td>Your name:</td><td><input size="70" type="text" name="tweet[author]" id="tweet_author" /></td><td/></tr>
+  <tr><td>Your tweet:</td><td><textarea rows="2" cols="70" name="tweet[content]" id="tweet_content">
+  </textarea></td>
+  <td><input type="submit" name="commit" value="Tweet!" data-disable-with="Tweet!" /></td></tr>
+  </table>
 </form></div>
-<% flash.each do |key, value| %>
-  <div class="wotitem"<p style="color:-<%= key %>;"><%= value %></p><span style="color: red;"></span></div>
+<% if notice %>
+  <br/><div class="wotitem"><span style="color: green;"><%= notice %></span></div>
+<% end %>  
+<% if alert %>
+  <br/><div class="wotitem"><span style="color: red;"><%= alert %></span></div>
 <% end %>  
 
-<% @tweets.each do |tweet| %>
+<% @grouped_tweets.each do |hash| %>
+  <br/><h3>...... <%= hash.first %></h3>
+  <% hash.last.each do |tweet| %>
     <div class="wotitem">
-    <div class="likes">
-    <span class="numlikes"><%= tweet.likes %></span><br/><span class="smallfont">people like this<span><br/>
-    <h3><%= link_to 'Like', like_tweet_path(tweet), method: :put %></h3>
+      <div class= "likes">
+        <span class="numlikes"><%= tweet.likes %></span><br/><span class="smallfont">people like this<span><br/>
+        <h3><%= link_to 'Like', like_tweet_path(tweet), method: :put %></h3>
+      </div>
+      <div class="item">
+        <h4><em><%= tweet.author %> @ </em><%= tweet.created_at.time.strftime("%H:%M") %></h4>
+        <p><%= tweet.content %></p>
+        <p style="text-align: right;"><%= link_to 'Destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' } %></p>
+      </div>
     </div>
-    <div class="item">
-    <h4><em><%= tweet.author %> @ </em><%= tweet.created_at %></h4>
-    <p><%= tweet.content %></p>
-    <p style="text-align: right;"><%= link_to 'Destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' } %></p>
-    </div>
-  </div>
+  <% end %>
 <% end %>
-<!--
-<table>
-  <thead>
-    <tr>
-      <th>Author</th>
-      <th>Content</th>
-      <th>Creation Date</th>
-      <th>Likes</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @tweets.each do |tweet| %>
-      <tr>
-        <td><%= tweet.author %></td>
-        <td><%= tweet.content %></td>
-        <td><%= tweet.created_at %></td>
-        <td><%= tweet.likes %></td>
-        <td><%= link_to 'Show', tweet %></td>
-        <td><%= link_to 'Edit', edit_tweet_path(tweet) %></td>
-        <td><%= link_to 'Destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-         <td><%= link_to 'Like', like_tweet_path(tweet), method: :put %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
--->

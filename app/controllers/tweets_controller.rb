@@ -5,6 +5,7 @@ class TweetsController < ApplicationController
   # GET /tweets.json
   def index
     @tweets = Tweet.all.order(created_at: :desc)
+    @grouped_tweets = @tweets.group_by{ |t| t.created_at.strftime("%A, %B %-d, %Y")}
   end
 
   # GET /tweets/1
@@ -28,7 +29,7 @@ class TweetsController < ApplicationController
 
     respond_to do |format|
       if @tweet.save
-        format.html { redirect_to root_path, success: 'Tweet was successfully created.' }
+        format.html { redirect_to tweets_url, notice: 'Tweet was successfully created.' }
         format.json { render :show, status: :created, location: @tweet }
         if session[:created_ids].nil?
           session[:created_ids] = [@tweet.id]
@@ -44,24 +45,24 @@ class TweetsController < ApplicationController
 
   # PATCH/PUT /tweets/1
   # PATCH/PUT /tweets/1.json
-  def update
-    respond_to do |format|
-      if @tweet.update(tweet_params)
-        format.html { redirect_to @tweet, notice: 'Tweet was successfully updated.' }
-        format.json { render :show, status: :ok, location: @tweet }
-      else
-        format.html { render :edit }
-        format.json { render json: @tweet.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+  # def update
+  #   respond_to do |format|
+  #     if @tweet.update(tweet_params)
+  #       format.html { redirect_to @tweet, notice: 'Tweet was successfully updated.' }
+  #       format.json { render :show, status: :ok, location: @tweet }
+  #     else
+  #       format.html { render :edit }
+  #       format.json { render json: @tweet.errors, status: :unprocessable_entity }
+  #     end
+  #   end
+  # end
 
   # DELETE /tweets/1
   # DELETE /tweets/1.json
   def destroy
     if (session[:created_ids].nil?) || !(session[:created_ids].include? (@tweet.id)) 
       respond_to do |format|
-      format.html { redirect_to tweets_url, notice: 'You are not allowed to delete this tweet' }
+      format.html { redirect_to tweets_url, alert: 'You are not allowed to delete this tweet' }
       format.json { head :no_content }
     end
     else
@@ -78,7 +79,7 @@ class TweetsController < ApplicationController
     @tweet.likes += 1
     if @tweet.save
       respond_to do |format|
-      format.html { redirect_to root_path, notice: 'Like' }
+      format.html { redirect_to root_path }
       format.json { render :show, status: :like, location: @tweet }
       end
     else
